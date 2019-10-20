@@ -1,7 +1,6 @@
 package com.kruczek.theravensystem.config;
 
-import com.kruczek.theravensystem.RavenSystemService;
-import com.kruczek.theravensystem.rss.RssService;
+import com.kruczek.theravensystem.RavenSystemCore;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -14,15 +13,15 @@ import java.time.LocalDateTime;
 @EnableScheduling
 public class SchedulerConfig {
 
-    private RavenSystemService ravenSystemService;
+    private RavenSystemCore ravenSystemCore;
 
-    public SchedulerConfig(RavenSystemService ravenSystemService) {
-        this.ravenSystemService = ravenSystemService;
+    public SchedulerConfig(RavenSystemCore ravenSystemCore) {
+        this.ravenSystemCore = ravenSystemCore;
     }
 
     @Scheduled(fixedDelayString = "${rss.news.valid.in.millis:1800000}")
     public void executeRssTask() {
         log.info("Executing RSS task: " + LocalDateTime.now());
-        ravenSystemService.fetchAndSendRssFeed();
+        ravenSystemCore.fetchAndSendRssFeed();
     }
 }

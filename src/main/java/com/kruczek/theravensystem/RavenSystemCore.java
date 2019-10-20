@@ -8,12 +8,12 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class RavenSystemService {
+public class RavenSystemCore {
 
     private RssService rssService;
 
     @Autowired
-    public RavenSystemService(RssService rssService) {
+    public RavenSystemCore(RssService rssService) {
         this.rssService = rssService;
     }
 
