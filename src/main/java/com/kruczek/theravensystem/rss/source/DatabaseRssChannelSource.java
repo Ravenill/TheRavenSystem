@@ -69,12 +69,8 @@ public class DatabaseRssChannelSource implements RssChannelSource {
     @SuppressWarnings("unchecked")
     public List<String> getChannels(RssCategory category) {
         Session session = sessionManager.getSession();
-        List<RssChannel> rssChannels = session.createCriteria(RssChannel.class)
-                .add(Restrictions.eq("rss_type", category))
-                .list();
+        List<RssChannel> rssChannels = session.createCriteria(RssChannel.class).add(Restrictions.eq("rss_type", category)).list();
 
-        return rssChannels.stream()
-                .map(RssChannel::getUrl)
-                .collect(Collectors.toList());
+        return rssChannels.stream().map(RssChannel::getUrl).collect(Collectors.toList());
     }
 }

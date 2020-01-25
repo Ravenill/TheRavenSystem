@@ -1,10 +1,7 @@
 package com.kruczek.theravensystem.rss;
 
-import com.kruczek.theravensystem.rss.helpers.SyndEntryConverter;
-import com.kruczek.theravensystem.rss.enchant.ViewEnchanter;
 import com.kruczek.theravensystem.rss.download.RssNews;
 import com.kruczek.theravensystem.rss.source.DatabaseRssChannelSource;
-import com.rometools.rome.feed.synd.SyndEntry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,15 +13,11 @@ import java.util.Map;
 public class RssService {
 
     private RssNews rssNews;
-    private ViewEnchanter viewEnchanter;
-    private SyndEntryConverter syndEntryConverter;
     private DatabaseRssChannelSource rssChannelSource;
 
     @Autowired
-    public RssService(RssNews rssNews, ViewEnchanter viewEnchanter, SyndEntryConverter syndEntryConverter, DatabaseRssChannelSource rssChannelSource) {
+    public RssService(RssNews rssNews, DatabaseRssChannelSource rssChannelSource) {
         this.rssNews = rssNews;
-        this.viewEnchanter = viewEnchanter;
-        this.syndEntryConverter = syndEntryConverter;
         this.rssChannelSource = rssChannelSource;
     }
 
@@ -54,8 +47,6 @@ public class RssService {
     }
 
     private List<RssNewsView> getDailyNewsInView(List<String> urls) {
-        List<SyndEntry> rssDailyNews = rssNews.getNewsFrom(urls);
-        List<RssNewsView> rssNewsViews = syndEntryConverter.toRssNewsView(rssDailyNews);
-        return viewEnchanter.enchant(rssNewsViews);
+        return rssNews.getNewsFrom(urls);
     }
 }

@@ -6,7 +6,7 @@ import lombok.Data;
 import javax.persistence.*;
 
 @Data
-@Entity( name = "rss_channels")
+@Entity(name = "rss_channels")
 public class RssChannel {
 
     @Id
