@@ -1,14 +1,16 @@
 package com.kruczek.theravensystem.config;
 
-import com.kruczek.theravensystem.RavenSystemCore;
-import lombok.extern.slf4j.Slf4j;
+import java.time.LocalDateTime;
+
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
+import com.kruczek.theravensystem.RavenSystemCore;
 
-@Slf4j
+import lombok.extern.log4j.Log4j;
+
+@Log4j
 @Component
 @EnableScheduling
 public class SchedulerConfig {

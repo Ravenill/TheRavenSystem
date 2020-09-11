@@ -8,7 +8,7 @@ import java.util.List;
 public interface NewsEnchanter {
     List<RssNewsView> enchant(List<SyndEntry> rssNewsViews);
 
-    String getContainsUrl();
+    String getDefineUrl();
 
     default RssNewsView createBasicRssNewsViewFrom(SyndEntry syndEntry) {
         return RssNewsView.builder()

@@ -1,6 +1,6 @@
 package com.kruczek.theravensystem.rss;
 
-import com.kruczek.theravensystem.rss.download.RssNews;
+import com.kruczek.theravensystem.rss.download.RssNewsDownloader;
 import com.kruczek.theravensystem.rss.source.DatabaseRssChannelSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,12 +12,12 @@ import java.util.Map;
 @Service
 public class RssService {
 
-    private RssNews rssNews;
-    private DatabaseRssChannelSource rssChannelSource;
+    private final RssNewsDownloader rssNewsDownloader;
+    private final DatabaseRssChannelSource rssChannelSource;
 
     @Autowired
-    public RssService(RssNews rssNews, DatabaseRssChannelSource rssChannelSource) {
-        this.rssNews = rssNews;
+    public RssService(RssNewsDownloader rssNewsDownloader, DatabaseRssChannelSource rssChannelSource) {
+        this.rssNewsDownloader = rssNewsDownloader;
         this.rssChannelSource = rssChannelSource;
     }
 
@@ -33,20 +33,28 @@ public class RssService {
         rssChannelSource.deleteChannel(url);
     }
 
-    public List<RssNewsView> getDailyNews() {
-        Map<RssCategory, List<String>> rssChannelsMap = rssChannelSource.getAllChannels();
+    public List<String> getListOfSources() {
+        Map<RssCategory, List<String>> rssChannelUrlsMap = rssChannelSource.getAllChannels();
 
         List<String> urls = new ArrayList<>();
-        rssChannelsMap.values().forEach(urls::addAll);
-        return getDailyNewsInView(urls);
+        rssChannelUrlsMap.values().forEach(urls::addAll);
+
+        return urls;
+    }
+
+    public List<String> getListOfSources(RssCategory category) {
+        return rssChannelSource.getChannels(category);
+    }
+
+    public List<RssNewsView> getDailyNews() {
+        return getDailyNewsInView(getListOfSources());
     }
 
     public List<RssNewsView> getDailyNews(RssCategory category) {
-        List<String> urls = rssChannelSource.getChannels(category);
-        return getDailyNewsInView(urls);
+        return getDailyNewsInView(getListOfSources(category));
     }
 
     private List<RssNewsView> getDailyNewsInView(List<String> urls) {
-        return rssNews.getNewsFrom(urls);
+        return rssNewsDownloader.getNewsFrom(urls);
     }
 }

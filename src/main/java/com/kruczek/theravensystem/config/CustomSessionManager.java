@@ -1,10 +1,10 @@
 package com.kruczek.theravensystem.config;
 
-import org.hibernate.Session;
-import org.springframework.stereotype.Component;
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+
+import org.hibernate.Session;
+import org.springframework.stereotype.Component;
 
 @Component
 public class CustomSessionManager {
