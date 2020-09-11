@@ -1,41 +1,48 @@
 package com.kruczek.theravensystem.rss.download;
 
+import java.io.IOException;
+import java.net.URL;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
 import com.kruczek.theravensystem.rss.RssNewsView;
 import com.kruczek.theravensystem.rss.enchant.NewsEnchanter;
 import com.rometools.rome.feed.synd.SyndEntry;
 import com.rometools.rome.io.FeedException;
 import com.rometools.rome.io.SyndFeedInput;
 import com.rometools.rome.io.XmlReader;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-import java.net.URL;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.*;
-import java.util.stream.Collectors;
+import lombok.extern.log4j.Log4j;
 
-@Slf4j
+@Log4j
 @Component
-public class RssNews {
+public class RssNewsDownloader {
 
     @Value("${rss.news.old:0}")
-    private long LIMIT_OF_OLD_NEWS;
+    private long limitOfOldNews;
 
     @Value("${rss.news.valid.in.millis:1800000}")
-    private long VALID_NEWS_IN_MILLIS;
+    private long validNewsInMillis;
 
-    private NewsEnchanter defaultEnchanter;
+    private final NewsEnchanter defaultEnchanter;
 
-    private Map<String, NewsEnchanter> newsEnchanters;
+    private final Map<String, NewsEnchanter> newsEnchanters;
 
     @Autowired
-    public RssNews(List<NewsEnchanter> newsEnchanters) {
+    public RssNewsDownloader(List<NewsEnchanter> newsEnchanters) {
         Map<String, NewsEnchanter> mapOfEnchanters = new HashMap<>();
-        newsEnchanters.forEach(newsEnchanter -> mapOfEnchanters.put(newsEnchanter.getContainsUrl(), newsEnchanter));
+        newsEnchanters.forEach(newsEnchanter -> mapOfEnchanters.put(newsEnchanter.getDefineUrl(), newsEnchanter));
         this.defaultEnchanter = mapOfEnchanters.get("default");
         this.newsEnchanters = mapOfEnchanters;
     }
@@ -43,7 +50,7 @@ public class RssNews {
     public List<RssNewsView> getNewsFrom(List<String> rssUrls) {
         List<RssNewsView> result = new ArrayList<>();
 
-        Instant dateAfterNewsCollected = Instant.now().minus(VALID_NEWS_IN_MILLIS, ChronoUnit.MILLIS);
+        Instant dateAfterNewsCollected = Instant.now().minus(validNewsInMillis, ChronoUnit.MILLIS);
 
         for (String rssUrl : rssUrls) {
             List<SyndEntry> contentOfFeed = getContentOfFeed(rssUrl);
@@ -51,9 +58,9 @@ public class RssNews {
                     .filter(content -> hasContentDateAfter(content, dateAfterNewsCollected))
                     .collect(Collectors.toList());
 
-            boolean shouldCollectOldData = LIMIT_OF_OLD_NEWS > 0 && filteredContent.isEmpty();
+            boolean shouldCollectOldData = limitOfOldNews > 0 && filteredContent.isEmpty();
             if (shouldCollectOldData) {
-                filteredContent = contentOfFeed.stream().limit(LIMIT_OF_OLD_NEWS).collect(Collectors.toList());
+                filteredContent = contentOfFeed.stream().limit(limitOfOldNews).collect(Collectors.toList());
             }
 
             List<RssNewsView> enchantedAndFilteredNews = newsEnchanters.getOrDefault(rssUrl, defaultEnchanter)

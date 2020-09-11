@@ -17,7 +17,7 @@ public class DefaultEnchanter implements NewsEnchanter {
     }
 
     @Override
-    public String getContainsUrl() {
+    public String getDefineUrl() {
         return "default";
     }
 }
