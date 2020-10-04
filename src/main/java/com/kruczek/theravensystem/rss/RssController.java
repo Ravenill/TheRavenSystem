@@ -27,12 +27,12 @@ public class RssController {
     }
 
     @DeleteMapping("rss")
-    public void addNewRssChannel(@RequestParam(name = "url") String url) {
+    public void deleteRssChannel(@RequestParam(name = "url") String url) {
         rssService.deleteSource(url);
     }
 
     @GetMapping("rss")
-    public @ResponseBody List<String> addNewRssChannel(@RequestParam(name = "category", required = false) RssCategory category) {
+    public @ResponseBody List<String> getRssChannels(@RequestParam(name = "category", required = false) RssCategory category) {
         if (category == null) {
             return rssService.getListOfSources();
         }

@@ -1,13 +1,16 @@
 package com.kruczek.theravensystem.rss;
 
-import com.kruczek.theravensystem.rss.download.RssNewsDownloader;
-import com.kruczek.theravensystem.rss.source.DatabaseRssChannelSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import javax.transaction.Transactional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.kruczek.theravensystem.rss.download.RssNewsDownloader;
+import com.kruczek.theravensystem.rss.source.DatabaseRssChannelSource;
 
 @Service
 public class RssService {

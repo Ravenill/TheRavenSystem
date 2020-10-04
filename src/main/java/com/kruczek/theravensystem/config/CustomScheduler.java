@@ -8,12 +8,12 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import com.kruczek.theravensystem.exception.CustomExceptionHandler;
 
 @Configuration
-public class CustomScheduler implements TaskSchedulerCustomizer {
+class CustomScheduler implements TaskSchedulerCustomizer {
 
     private final CustomExceptionHandler customExceptionHandler;
 
     @Autowired
-    public CustomScheduler(CustomExceptionHandler customExceptionHandler) {
+    CustomScheduler(CustomExceptionHandler customExceptionHandler) {
         this.customExceptionHandler = customExceptionHandler;
     }
 
