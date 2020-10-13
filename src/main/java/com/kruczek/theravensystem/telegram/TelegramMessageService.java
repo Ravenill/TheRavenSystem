@@ -4,8 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import com.kruczek.theravensystem.exception.CannotSendMessageException;
-
 import lombok.extern.log4j.Log4j;
 
 @Log4j
@@ -15,7 +13,7 @@ public class TelegramMessageService {
     private final ChannelMapper channelMapper;
 
     @Autowired
-    public TelegramMessageService(TelegramBotContext telegramBotContext, ChannelMapper channelMapper) {
+    TelegramMessageService(TelegramBotContext telegramBotContext, ChannelMapper channelMapper) {
         this.telegramBotContext = telegramBotContext;
         this.channelMapper = channelMapper;
     }

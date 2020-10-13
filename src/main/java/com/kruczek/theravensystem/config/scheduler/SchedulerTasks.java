@@ -1,4 +1,4 @@
-package com.kruczek.theravensystem.config;
+package com.kruczek.theravensystem.config.scheduler;
 
 import java.time.LocalDateTime;
 
@@ -14,12 +14,12 @@ import lombok.extern.log4j.Log4j;
 @Log4j
 @Component
 @EnableScheduling
-class SchedulerConfig {
+class SchedulerTasks {
 
     private final RavenSystemCore ravenSystemCore;
 
     @Autowired
-    SchedulerConfig(RavenSystemCore ravenSystemCore) {
+    SchedulerTasks(RavenSystemCore ravenSystemCore) {
         this.ravenSystemCore = ravenSystemCore;
     }
 

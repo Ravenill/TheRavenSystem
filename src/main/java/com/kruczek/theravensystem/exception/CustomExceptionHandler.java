@@ -22,8 +22,7 @@ public class CustomExceptionHandler implements ErrorHandler {
     private Long technicalChannel;
 
     @Autowired
-    public CustomExceptionHandler(TelegramBotContext telegramBotContext,
-            ExceptionMessageFormatter exceptionMessageFormatter) {
+    CustomExceptionHandler(TelegramBotContext telegramBotContext, ExceptionMessageFormatter exceptionMessageFormatter) {
         this.telegramBotContext = telegramBotContext;
         this.exceptionMessageFormatter = exceptionMessageFormatter;
     }
@@ -31,9 +30,13 @@ public class CustomExceptionHandler implements ErrorHandler {
     @Override
     @ExceptionHandler(value = Exception.class)
     public void handleError(Throwable e) {
+        log.error(e);
+        exceptionMessageFormatter.formatException(e).forEach(this::tryToSentPartOfMessage);
+    }
+
+    private void tryToSentPartOfMessage(String partOfMessage) {
         try {
-            log.error(e);
-            telegramBotContext.sendMessage(exceptionMessageFormatter.formatException(e), technicalChannel);
+            telegramBotContext.sendMessage(partOfMessage, technicalChannel);
         } catch (TelegramApiException telegramApiException) {
             log.error(telegramApiException);
         }

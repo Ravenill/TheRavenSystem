@@ -1,4 +1,4 @@
-package com.kruczek.theravensystem.config;
+package com.kruczek.theravensystem.config.scheduler;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.task.TaskSchedulerCustomizer;
@@ -8,12 +8,12 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import com.kruczek.theravensystem.exception.CustomExceptionHandler;
 
 @Configuration
-class CustomScheduler implements TaskSchedulerCustomizer {
+class SchedulerConfig implements TaskSchedulerCustomizer {
 
     private final CustomExceptionHandler customExceptionHandler;
 
     @Autowired
-    CustomScheduler(CustomExceptionHandler customExceptionHandler) {
+    SchedulerConfig(CustomExceptionHandler customExceptionHandler) {
         this.customExceptionHandler = customExceptionHandler;
     }
 

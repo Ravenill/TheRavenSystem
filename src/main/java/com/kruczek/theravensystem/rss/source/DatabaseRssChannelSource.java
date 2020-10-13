@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jooq.DSLContext;
+import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -42,11 +43,15 @@ public class DatabaseRssChannelSource implements RssChannelSource {
     public Map<RssCategory, List<String>> getAllChannels() {
         final Map<RssCategory, List<String>> result = new EnumMap<>(RssCategory.class);
 
-        create.select(RSS_CHANNELS.RSS_TYPE, RSS_CHANNELS.URL)
-                .from(RSS_CHANNELS)
-                .fetch()
-                .intoGroups(RSS_CHANNELS.RSS_TYPE, RSS_CHANNELS.URL)
-                .forEach((key, val) -> result.put(RssCategory.valueOf(key.name()), val));
+        create.transaction(configuration -> {
+            DSL.using(configuration).select(RSS_CHANNELS.RSS_TYPE, RSS_CHANNELS.URL)
+                    .from(RSS_CHANNELS)
+                    .fetch()
+                    .intoGroups(RSS_CHANNELS.RSS_TYPE, RSS_CHANNELS.URL)
+                    .forEach((key, val) -> result.put(RssCategory.valueOf(key.name()), val));
+
+            throw new RuntimeException("Test");
+        });
 
         return result;
     }
