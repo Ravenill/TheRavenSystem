@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.kruczek.theravensystem.rss.RssService;
+import com.kruczek.theravensystem.telegram.ChannelName;
 import com.kruczek.theravensystem.telegram.TelegramMessageService;
 
 @Service
@@ -19,6 +20,7 @@ public class RavenSystemCore {
     }
 
     public void fetchAndSendRssFeed() {
-
+        rssService.getDailyNews()
+                .forEach(news -> telegramMessageService.sendMessage(news.toString(), ChannelName.RS_DAILY_FEED_CHANNEL));
     }
 }
