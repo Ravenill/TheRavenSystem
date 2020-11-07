@@ -30,7 +30,7 @@ public class CustomExceptionHandler implements ErrorHandler {
     @Override
     @ExceptionHandler(value = Throwable.class)
     public void handleError(Throwable e) {
-        log.error(e);
+        log.error("Error catch!", e);
         exceptionMessageFormatter.formatException(e).forEach(this::tryToSentPartOfMessage);
     }
 
