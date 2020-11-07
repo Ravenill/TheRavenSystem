@@ -17,7 +17,9 @@ class ExceptionMessageFormatter {
     private static final String SEPARATOR = "\n_______________________________________\n";
 
     List<String> formatException(Throwable e) {
-        final StringBuilder exceptionMessageBuilder = new StringBuilder(e.getLocalizedMessage());
+        final StringBuilder exceptionMessageBuilder = new StringBuilder(e.toString());
+        exceptionMessageBuilder.append("\n").append(e.getLocalizedMessage());
+
         exceptionMessageBuilder.append("\n\n_________Cause_________\n").append(e.getCause())
                 .append(SEPARATOR);
 

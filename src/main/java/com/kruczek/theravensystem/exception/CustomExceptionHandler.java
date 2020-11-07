@@ -28,7 +28,7 @@ public class CustomExceptionHandler implements ErrorHandler {
     }
 
     @Override
-    @ExceptionHandler(value = Exception.class)
+    @ExceptionHandler(value = Throwable.class)
     public void handleError(Throwable e) {
         log.error(e);
         exceptionMessageFormatter.formatException(e).forEach(this::tryToSentPartOfMessage);
