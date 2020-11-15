@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,12 +51,12 @@ public class RssNewsDownloader {
     public List<RssNewsView> getNewsFrom(List<String> rssUrls) {
         List<RssNewsView> result = new ArrayList<>();
 
-        Instant dateAfterNewsCollected = Instant.now().minus(validNewsInMillis, ChronoUnit.MILLIS);
+        Instant maximumDateOfValidNews = Instant.now().minus(validNewsInMillis, ChronoUnit.MILLIS);
 
         for (String rssUrl : rssUrls) {
             List<SyndEntry> contentOfFeed = getContentOfFeed(rssUrl);
             List<SyndEntry> filteredContent = contentOfFeed.stream()
-                    .filter(content -> hasContentDateAfter(content, dateAfterNewsCollected))
+                    .filter(isContentGeneratedAfter(maximumDateOfValidNews))
                     .collect(Collectors.toList());
 
             boolean shouldCollectOldData = limitOfOldNews > 0 && filteredContent.isEmpty();
@@ -82,13 +83,17 @@ public class RssNewsDownloader {
         return Collections.emptyList();
     }
 
-    private boolean hasContentDateAfter(SyndEntry content, Instant dateAfterNewsCollected) {
+    private Predicate<SyndEntry> isContentGeneratedAfter(Instant maximumDateOfValidNews) {
+        return content -> hasContentDateAfter(content, maximumDateOfValidNews);
+    }
+
+    private boolean hasContentDateAfter(SyndEntry content, Instant maximumDateOfValidNews) {
         Date contentDate = content.getUpdatedDate();
 
         if (contentDate == null) {
             contentDate = content.getPublishedDate();
         }
 
-        return contentDate.toInstant().isAfter(dateAfterNewsCollected);
+        return contentDate.toInstant().isAfter(maximumDateOfValidNews);
     }
 }

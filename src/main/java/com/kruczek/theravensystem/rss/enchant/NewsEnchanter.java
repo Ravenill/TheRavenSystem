@@ -1,16 +1,24 @@
 package com.kruczek.theravensystem.rss.enchant;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.kruczek.theravensystem.rss.RssNewsView;
 import com.rometools.rome.feed.synd.SyndEntry;
 
-import java.util.List;
+public abstract class NewsEnchanter {
 
-public interface NewsEnchanter {
-    List<RssNewsView> enchant(List<SyndEntry> rssNewsViews);
+    protected abstract RssNewsView buildRssNewsEntry(SyndEntry rssNewsViews);
 
-    String getDefineUrl();
+    public abstract String getDefineUrl();
 
-    default RssNewsView createBasicRssNewsViewFrom(SyndEntry syndEntry) {
+    public List<RssNewsView> enchant(List<SyndEntry> syndEntries) {
+        return syndEntries.stream()
+                .map(this::buildRssNewsEntry)
+                .collect(Collectors.toList());
+    }
+
+    protected RssNewsView buildDefaultEntry(SyndEntry syndEntry) {
         return RssNewsView.builder()
                 .title(syndEntry.getTitle())
                 .desc(syndEntry.getDescription().getValue())
